@@ -1,4 +1,5 @@
 
+
 Jenkinsfile (Declarative Pipeline)
 pipeline {
     agent { docker 'python:3.5.1' }
@@ -16,6 +17,8 @@ pipeline {
     }
     post {
         always {
+            echo 'This is always run'
+            archive 'build/libs/**/*.jar'
             junit 'build/reports/**/*.xml'
         }
         success {
