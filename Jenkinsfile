@@ -4,8 +4,13 @@ pipeline {
     stages {
         stage('build') {
             steps {
-               cmd 'python --version'
-            }
+                retry(3) {
+                    bat 'awscli --version'
+                }
+                retry(2) {
+                    bat 'python --version'            
+                }
+            }    
         }
     }
 }
