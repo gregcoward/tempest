@@ -6,10 +6,10 @@ pipeline {
         stage('build') {
             steps {
                 retry(3) {
-                    bat 'awscli --version'
+                    sh 'awscli --version'
                 }
                 retry(2) {
-                    bat 'python --version'            
+                    sh 'python --version'            
                 }
             }    
         }
