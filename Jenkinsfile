@@ -1,5 +1,6 @@
 
 
+
 Jenkinsfile (Declarative Pipeline)
 pipeline {
     agent { docker 'python:3.5.1' }
@@ -14,6 +15,11 @@ pipeline {
                 }
             }    
         }
+        stage('Sanity check') {
+            steps {
+                input "Does the staging environment look ok?"
+            }
+        }        
     }
     post {
         always {
@@ -23,6 +29,9 @@ pipeline {
         }
         success {
             echo 'This will run only if successful'
+            slackSend channel: '#tempest',
+                  color: 'good',
+                  message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."          
         }
         failure {
             echo 'This will run only if failed'
