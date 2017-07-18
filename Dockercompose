@@ -1,0 +1,22 @@
+version: "3"
+services:
+  jenkins-master: 
+     image: jenkins-master 
+     deploy:
+		replicas: 1
+		resources:
+		   limits:
+		      cpu_shares: 100 
+              mem_limit: 2000M 
+     ports: 
+        - "8080:8080",
+          “50000:50000” 
+     volumes_from:jenkins-dv 
+   jenkins-dv: 
+      image: jenkins-dv 
+	  deploy:
+		replicas: 1
+		resources:
+		  limits:
+		    cpu_shares: 100 
+            mem_limit: 500M 
