@@ -1,17 +1,11 @@
 FROM nginx:latest
-MAINTAINER Ladislav Gazo <gazo@seges.sk>
-
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get update -qq && \
-    apt-get -y install wget runit unzip && \
-    rm -rf /var/lib/apt/lists/*
+MAINTAINER Gregory Coward <g.coward@f5.com>
 
 RUN wget https://releases.hashicorp.com/consul-template/0.12.0/consul-template_0.12.0_linux_amd64.zip
 RUN unzip -d /usr/local/bin consul-template_0.12.0_linux_amd64.zip
+RUN chmod a+x /usr/local/bin/consul-template
+RUN mkdir /templates
+ADD ping.ctmpl /templates
+RUN nginx /usr/local/bin/consul-template -consul 10.0.0.129:8500 -template "/templates/ping.ctmpl:/etc/nginx/conf.d/ping.conf:service nginx reload" -pid-file /var/run/consul-template.pid -log-level warn
 
-ADD nginx.service /etc/service/nginx/run
-ADD consul-template.service /etc/service/consul-template/run
 
-RUN mkdir /etc/consul-template && chmod +x /etc/service/nginx/run && chmod +x /etc/service/consul-template/run
-
-CMD ["/usr/bin/runsvdir", "/etc/service"]
